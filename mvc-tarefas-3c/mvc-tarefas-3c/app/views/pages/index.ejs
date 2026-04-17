@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Integração com SGBD </title>
+</head>
+
+<body>
+
+    <h1><%= tituloPagina %></h1>
+
+    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+        <ul style="color:red">
+            <% errors.forEach(function(e){ %>
+                <li><%= e.msg %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <form action="/cadastro" method="post">
+        <input type="hidden" name="id" id="id" value="<%= tarefa.id_tarefa %>">
+        <label for="tarefa">Tarefa:</label><br>
+        <textarea name="tarefa" id="tarefa"><%= tarefa.nome_tarefa %></textarea> <br>
+        <label for="prazo">Prazo:</label><br>
+        <input type="date" name="prazo" id="prazo" value="<%= moment(tarefa.prazo_tarefa).format('YYYY-MM-DD') %>"> <br>
+        <label for="situacao">Situação:</label><br>
+        <select name="situacao" id="situacao">
+            <option value="0" <%= tarefa.situacao_tarefa == 0 ? 'selected' : '' %>>Cancelada</option>
+            <option value="1" <%= tarefa.situacao_tarefa == 1 ? 'selected' : '' %>>Pendente</option>
+            <option value="2" <%= tarefa.situacao_tarefa == 2 ? 'selected' : '' %>>Iniciada</option>
+            <option value="3" <%= tarefa.situacao_tarefa == 3 ? 'selected' : '' %>>Finalizada</option>
+            <option value="4" <%= tarefa.situacao_tarefa == 4 ? 'selected' : '' %>>Em Atraso</option>
+        </select> <br><br>
+        <input type="submit" value="Salvar">
+    </form>
+
+    <br>
+    <br>
+
+   <table>
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Tarefa</th>
+            <th>Prazo</th>
+            <th>Situação</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+<% if(linhasTabela){
+    let situacao = ["Cancelada", "Pendente","Iniciada","Finalizada","Em Atraso"];
+    
+    linhasTabela.forEach((item)=>{
+    %>
+        <tr>
+            <td><%= item.id_tarefa %></td>
+            <td><%= item.nome_tarefa %></td>
+            <td><%= moment(item.prazo_tarefa).format('L') %></td>
+            <td><%= situacao[item.situacao_tarefa] %></td>       
+            <td><a href="/alterar?id=<%= item.id_tarefa %>">Editar</a></td>       
+            <!-- adicionar a opção de excluir a tarefa ( exclusão lógica) -->
+        </tr>
+    <% 
+        });
+        } else { %>
+        <tr colspan="5">
+            <td>Não há dados para exibir</td>
+        </tr>    
+    <% } %>    
+    </tbody>
+   </table>
+
+</body>
+
+</html>
